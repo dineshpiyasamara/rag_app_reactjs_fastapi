@@ -8,8 +8,51 @@ import rocket from "./assets/rocket.svg";
 import sendBtn from "./assets/send.svg";
 import userIcon from "./assets/user-icon.png";
 import gptImgLogo from "./assets/chatgptLogo.svg";
+import { sendMsgToOpenAI } from "./openai";
+import { useEffect, useRef, useState } from "react";
 
 function App() {
+  const msgEnd = useRef(null);
+
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([
+    {
+      text: "Hi. I am large language model based application",
+      isBot: true,
+    },
+  ]);
+
+  useEffect(() => {
+    msgEnd.current.scrollIntoView();
+  }, [messages]);
+
+  const handleSend = async () => {
+    const text = input;
+    setInput("");
+    setMessages([...messages, { text: text, isBot: false }]);
+    const res = await sendMsgToOpenAI(text);
+    setMessages([
+      ...messages,
+      { text: text, isBot: false },
+      { text: res, isBot: true },
+    ]);
+  };
+
+  const handleEnter = async (e) => {
+    if (e.key === "Enter") await handleSend();
+  };
+
+  const handleQuery = async (e) => {
+    const text = e.target.value;
+    setMessages([...messages, { text: text, isBot: false }]);
+    const res = await sendMsgToOpenAI(text);
+    setMessages([
+      ...messages,
+      { text: text, isBot: false },
+      { text: res, isBot: true },
+    ]);
+  };
+
   return (
     <div className="App">
       <div className="sideBar">
@@ -18,18 +61,29 @@ function App() {
             <img src={gptLogo} alt="Logo" className="logo" />
             <span className="brand">RAG GPT</span>
           </div>
-          <button className="midButton">
+          <button
+            className="midButton"
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
             <img src={addBtn} alt="new chat" className="addButton" />
             New Chat
           </button>
           <div className="upperSideBottom">
-            <button className="query">
+            <button
+              className="query"
+              onClick={handleQuery}
+              value={"What is Programming?"}
+            >
               <img src={msgIcon} alt="Query" />
-              What is Programming?
             </button>
-            <button className="query">
+            <button
+              className="query"
+              onClick={handleQuery}
+              value={"Most demanded jobs"}
+            >
               <img src={msgIcon} alt="Query" />
-              Most demanded jobs
             </button>
           </div>
         </div>
@@ -50,47 +104,30 @@ function App() {
       </div>
       <div className="main">
         <div className="chats">
-          <div className="chat">
-            <img className="chatImg" src={userIcon} alt="" />
-            <p className="txt">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Distinctio, quidem. Praesentium ipsum eum alias repellendus
-              officiis facilis ipsam autem. Dolor et quos eius, incidunt dolorum
-              aliquid quisquam non voluptatem suscipit, laborum explicabo nisi
-              ducimus sed sit! Doloribus architecto, atque quibusdam quos
-              eligendi earum tenetur maiores inventore et iure eveniet obcaecati
-              aut voluptatem commodi aperiam voluptatum temporibus quidem
-              molestiae aliquid distinctio dolor ratione recusandae sequi
-              deserunt! Eum velit dignissimos perspiciatis molestias recusandae!
-              Consequatur sequi dolore earum voluptatum est odio voluptas,
-              soluta mollitia accusamus officiis animi nostrum saepe, reiciendis
-              voluptates quia numquam distinctio molestias tempora consectetur
-              eum quod commodi fuga cum. Recusandae!
-            </p>
-          </div>
-          <div className="chat bot">
-            <img className="chatImg" src={gptImgLogo} alt="" />
-            <p className="txt">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor
-              ullam ab ducimus neque officiis placeat facere temporibus eius,
-              consequuntur tempora perspiciatis facilis rem aliquam perferendis
-              ipsum. Perspiciatis, cum. Voluptatum, perferendis aliquid, dolor
-              velit consequuntur cum aliquam consectetur adipisci facere omnis
-              consequatur ab quae, provident exercitationem. Corrupti dolores
-              adipisci neque suscipit at dicta repudiandae laboriosam numquam
-              est reiciendis ipsam aperiam, asperiores officiis, enim ipsa
-              placeat nam laudantium nisi perferendis accusantium debitis unde?
-              Consequuntur, quia explicabo suscipit, ad magnam inventore sit
-              magni, officia accusantium illum adipisci quis reprehenderit
-              obcaecati ab pariatur maxime nostrum cupiditate libero minima
-              molestiae voluptatem excepturi! Temporibus, exercitationem eius.
-            </p>
-          </div>
+          {messages.map((message, i) => (
+            <div key={i} className={message.isBot ? "chat bot" : "chat"}>
+              <img
+                className="chatImg"
+                src={message.isBot ? gptImgLogo : userIcon}
+                alt=""
+              />
+              <p className="txt">{message}</p>
+            </div>
+          ))}
+          <div ref={msgEnd} />
         </div>
         <div className="chatFooter">
           <div className="inp">
-            <input type="text" placeholder="Send a message..." />
-            <button className="send">
+            <input
+              type="text"
+              placeholder="Send a message..."
+              value={input}
+              onChange={(e) => {
+                setInput(e.target.value);
+              }}
+              onKeyDown={handleEnter}
+            />
+            <button className="send" onClick={handleSend}>
               <img src={sendBtn} alt="send" />
             </button>
           </div>

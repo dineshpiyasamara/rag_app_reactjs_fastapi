@@ -183,3 +183,8 @@ body{
 .chatFooter>p{
   margin: 2rem 0;
 }
+
+.txt {
+  line-height: 2.4rem;
+  color: rgba(222,222,222,1);
+}
