@@ -71,19 +71,13 @@ function App() {
             New Chat
           </button>
           <div className="upperSideBottom">
-            <button
-              className="query"
-              onClick={handleQuery}
-              value={"What is Programming?"}
-            >
+            <button className="query" onClick={handleQuery}>
               <img src={msgIcon} alt="Query" />
+              What is Programming?
             </button>
-            <button
-              className="query"
-              onClick={handleQuery}
-              value={"Most demanded jobs"}
-            >
+            <button className="query" onClick={handleQuery}>
               <img src={msgIcon} alt="Query" />
+              Most demanded jobs
             </button>
           </div>
         </div>
@@ -111,7 +105,7 @@ function App() {
                 src={message.isBot ? gptImgLogo : userIcon}
                 alt=""
               />
-              <p className="txt">{message}</p>
+              <p className="txt">{message.text}</p>
             </div>
           ))}
           <div ref={msgEnd} />
