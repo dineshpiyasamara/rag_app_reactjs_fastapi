@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import uvicorn
 from src.llms import openai_llm, azure_openai_llm
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -28,3 +29,6 @@ async def test_llm():
     response = chain.invoke({'question': query})
     print(response)
     return {"message": response}
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
