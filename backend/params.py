@@ -1,11 +1,1 @@
-from fastapi import FastAPI
-
-app = FastAPI()
-
-
-@app.get('/api/test/')
-async def test():
-    data = {
-        "message": "Welcome to CodePRO LK",
-    }
-    return data
+llm_model_name = "gpt-3.5-turbo"
