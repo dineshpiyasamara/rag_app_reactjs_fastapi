@@ -3,6 +3,7 @@ import uvicorn
 from src.llms import openai_llm, azure_openai_llm
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from src.entity import Query
 
 app = FastAPI()
 
@@ -12,9 +13,11 @@ async def test():
     return {"message": "Welcome to CodePRO LK!"}
 
 
-@app.get("/api/test_llm")
-async def test_llm():
-    query = "hello. how are you"
+@app.post("/api/ask_llm")
+async def test_llm(request: Query):
+    print("=================")
+    print(request)
+    query = request.question
     llm = azure_openai_llm()
 
     prompt = ChatPromptTemplate.from_messages([
@@ -28,7 +31,7 @@ async def test_llm():
 
     response = chain.invoke({'question': query})
     print(response)
-    return {"message": response}
+    return {"response": response}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="localhost", port=8000, reload=True)

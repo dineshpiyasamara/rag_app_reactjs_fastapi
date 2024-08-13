@@ -1,19 +1,20 @@
-const { Configuration, OpenAIApi } = require("openai");
-const configuration = new Configuration({
-  apiKey: "",
-});
-const openai = new OpenAIApi(configuration);
-
 export async function sendMsgToOpenAI(message) {
-  console.log(message);
-  const res = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: message,
-    temperature: 0.7,
-    max_tokens: 256,
-    top_p: 1,
-    frequency_penalty: 0,
-    presence_penalty: 0,
-  });
-  return res.data.choices[0].text;
+  const data = { question: message };
+  console.log("=================");
+  console.log(JSON.stringify(data));
+  fetch("http://127.0.0.1:8000/api/ask_llm", {
+    mode: "no-cors",
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ question: "message" }),
+  })
+    .then((res) => res.json())
+    .then((res) => console.log(res));
 }
+
+// function fetchAPI() {
+//   axios.get('http://localhost:5000/hello')
+//     .then(response => console.log(response.data))
+// }
