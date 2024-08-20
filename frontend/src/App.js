@@ -31,6 +31,7 @@ function App() {
     setInput("");
     setMessages([...messages, { text: text, isBot: false }]);
     const res = await sendMsgToOpenAI(text);
+    console.log(res);
     setMessages([
       ...messages,
       { text: text, isBot: false },
@@ -46,6 +47,7 @@ function App() {
     const text = e.target.value;
     setMessages([...messages, { text: text, isBot: false }]);
     const res = await sendMsgToOpenAI(text);
+    console.log("Finally finaly, " + res);
     setMessages([
       ...messages,
       { text: text, isBot: false },
